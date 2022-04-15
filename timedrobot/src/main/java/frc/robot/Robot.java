@@ -2,8 +2,16 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot.Constants.CANPortConstants;
+import frc.robot.Robot.Constants.DriveConstants;
+
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 public class Robot extends TimedRobot {
 
@@ -113,6 +121,36 @@ public class Robot extends TimedRobot {
 
   }
   // CONSTANTS
+
+  private final WPI_TalonSRX leftTalonSRX1 = new WPI_TalonSRX(CANPortConstants.leftFrontTalon);
+  private final WPI_TalonSRX leftTalonSRX2 = new WPI_TalonSRX(CANPortConstants.leftBackTalon);
+  private final WPI_VictorSPX rightVictorSPX1 = new WPI_VictorSPX(CANPortConstants.rightFrontVictor);
+  private final WPI_VictorSPX rightVictorSPX2 = new WPI_VictorSPX(CANPortConstants.rightBackVictor);
+  private final MotorControllerGroup leftGroup = new MotorControllerGroup(leftTalonSRX1, leftTalonSRX2);
+  private final MotorControllerGroup rightGroup = new MotorControllerGroup(rightVictorSPX1, rightVictorSPX2);
+  private final DifferentialDrive difDrive = new DifferentialDrive(leftGroup, rightGroup);
+
+  private NeutralMode defaultMode = NeutralMode.Brake;
+
+  public void DriveSubsystem() {
+    leftTalonSRX1.setInverted(DriveConstants.kSetLeft1Inverted);
+    leftTalonSRX2.setInverted(DriveConstants.kSetLeft2Inverted);
+    rightVictorSPX1.setInverted(DriveConstants.kSetRight1Inverted);
+    rightVictorSPX2.setInverted(DriveConstants.kSetRight2Inverted);
+    leftTalonSRX1.setNeutralMode(defaultMode);
+    leftTalonSRX2.setNeutralMode(defaultMode);
+    rightVictorSPX1.setNeutralMode(defaultMode);
+    rightVictorSPX2.setNeutralMode(defaultMode);
+  }
+
+  public void tankDrive(double leftSpeed, double rightSpeed) {
+    difDrive.tankDrive(leftSpeed, rightSpeed);
+  }
+
+  public void stopMotors() {
+    leftGroup.stopMotor();
+    rightGroup.stopMotor();
+  }
 
   @Override
   public void robotInit() {
