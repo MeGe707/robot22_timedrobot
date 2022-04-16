@@ -322,6 +322,10 @@ public class Robot extends TimedRobot {
   public JoystickButton TurretTurnRightButton = new JoystickButton(driverController,
       Constants.JoystickConstants.kTurretTurnRightButton);
 
+  public boolean isTurretTurnedLeft = true;
+  public boolean isSolenoidOn = false;
+  public boolean isReadyToShoot = false;
+
   // COMMANDS
 
   public void ObjectOutCommand() {
@@ -475,12 +479,25 @@ public class Robot extends TimedRobot {
     }
 
     else if (solenoidOnButton.get()) {
-      m_intake.openIntakeSolenoid();
+
+      if (!isSolenoidOn) {
+        m_intake.openIntakeSolenoid();
+        isSolenoidOn = true;
+      } else {
+
+      }
+
     }
 
     else if (solenoidReverseButton.get()) {
-      m_intake.reverseIntakeSolenoid();
-      ;
+
+      if (isSolenoidOn) {
+        m_intake.reverseIntakeSolenoid();
+        isSolenoidOn = false;
+      } else {
+
+      }
+
     }
 
     else if (TurretTurnLeftButton.get()) {
